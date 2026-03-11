@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frum Fashion Market - Modest Pre-Loved Fashion UK</title>
+  <meta name="description" content="Buy and sell Tznius second-hand clothing for the Frum community in the UK. Shabbos wear, everyday modest fashion, children's clothing and more.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a href="/" class="logo">
+        <span class="logo-icon">F</span>
+        Frum Fashion Market
+      </a>
+      <button class="menu-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/" class="active">Browse</a></li>
+          <li><a href="/seller/">My Listings</a></li>
+          <li><a href="/seller/" class="btn-sell">+ Sell Item</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1>Modest Pre-Loved Fashion</h1>
+      <p>Buy and sell Tznius second-hand clothing for the Frum community across the UK</p>
+      <div class="hero-search">
+        <input type="text" id="heroSearch" placeholder="Search for items, e.g. 'Shabbos dress size 12'...">
+        <button type="button" id="heroSearchBtn" aria-label="Search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filters -->
+  <section class="filters-bar">
+    <div class="container filters-inner">
+      <div class="filter-group">
+        <label>For:</label>
+        <select class="filter-select" id="filterForWhom">
+          <option value="">Everyone</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Type:</label>
+        <select class="filter-select" id="filterType">
+          <option value="">All Types</option>
+        </select>
+      </div>
+      <div class="filter-group" id="ageRangeGroup" style="display:none">
+        <label>Age:</label>
+        <select class="filter-select" id="filterAgeRange">
+          <option value="">All Ages</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Condition:</label>
+        <select class="filter-select" id="filterCondition">
+          <option value="">Any</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Max Price:</label>
+        <select class="filter-select" id="filterMaxPrice">
+          <option value="">Any</option>
+          <option value="10">Under £10</option>
+          <option value="20">Under £20</option>
+          <option value="30">Under £30</option>
+          <option value="50">Under £50</option>
+          <option value="100">Under £100</option>
+        </select>
+      </div>
+      <button class="filter-clear" id="clearFilters">Clear All</button>
+    </div>
+  </section>
+
+  <!-- Listings -->
+  <main class="listings-section">
+    <div class="container">
+      <div class="listings-header">
+        <h2>Latest Listings</h2>
+        <span class="results-count" id="resultsCount"></span>
+      </div>
+      <div class="listings-grid" id="listingsGrid">
+        <!-- Cards rendered by JS -->
+      </div>
+      <div class="empty-state" id="emptyState" style="display:none">
+        <div class="empty-icon">🔍</div>
+        <h3>No items found</h3>
+        <p>Try adjusting your filters or search terms</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="logo">
+            <span class="logo-icon">F</span>
+            Frum Fashion Market
+          </div>
+          <p>The UK's marketplace for modest pre-loved fashion. Connecting the Frum community one outfit at a time.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="/">Browse Items</a></li>
+            <li><a href="/seller/">Sell Your Items</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Categories</h4>
+          <ul>
+            <li><a href="#" onclick="setFilter('forWhom','Women');return false">Women's Clothing</a></li>
+            <li><a href="#" onclick="setFilter('forWhom','Men');return false">Men's Clothing</a></li>
+            <li><a href="#" onclick="setFilter('forWhom','Girls');return false">Girls' Clothing</a></li>
+            <li><a href="#" onclick="setFilter('forWhom','Boys');return false">Boys' Clothing</a></li>
+            <li><a href="#" onclick="setFilter('forWhom','Children');return false">Children's Clothing</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Frum Fashion Market. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/listings.js"></script>
+</body>
+</html>

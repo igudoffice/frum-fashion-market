@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listing - Frum Fashion Market</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a href="/" class="logo">
+        <span class="logo-icon">F</span>
+        Frum Fashion Market
+      </a>
+      <button class="menu-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/">Browse</a></li>
+          <li><a href="/seller/">My Listings</a></li>
+          <li><a href="/seller/" class="btn-sell">+ Sell Item</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Listing Detail -->
+  <main class="listing-detail">
+    <div class="container">
+      <a href="/" class="listing-back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to listings
+      </a>
+
+      <div class="detail-layout" id="detailContent">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Related Listings -->
+      <section class="related-section" id="relatedSection" style="display:none">
+        <h2>You Might Also Like</h2>
+        <div class="listings-grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="logo">
+            <span class="logo-icon">F</span>
+            Frum Fashion Market
+          </div>
+          <p>The UK's marketplace for modest pre-loved fashion. Connecting the Frum community one outfit at a time.</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Frum Fashion Market. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/data.js"></script>
+  <script src="../js/listing-detail.js"></script>
+</body>
+</html>

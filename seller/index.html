@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sell Your Items - Frum Fashion Market</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a href="/" class="logo">
+        <span class="logo-icon">F</span>
+        Frum Fashion Market
+      </a>
+      <button class="menu-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/">Browse</a></li>
+          <li><a href="/seller/" class="active">My Listings</a></li>
+          <li><a href="/seller/" class="btn-sell">+ Sell Item</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="seller-page">
+    <div class="container">
+
+      <!-- Auth Section (shown when not logged in) -->
+      <div id="authSection">
+        <div class="auth-container" id="loginForm">
+          <h2>Seller Login</h2>
+          <p class="auth-subtitle">Sign in to manage your listings</p>
+          <div class="auth-error" id="loginError"></div>
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" class="form-input" placeholder="your@email.com">
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" class="form-input" placeholder="Your password">
+          </div>
+          <button class="btn-primary" id="loginBtn">Sign In</button>
+          <p class="auth-toggle">
+            Don't have an account? <a href="#" id="showRegister">Register here</a>
+          </p>
+          <p style="margin-top:16px;font-size:0.8rem;color:var(--text-muted)">
+            Demo: demo@frumfashion.co.uk / demo123
+          </p>
+        </div>
+
+        <div class="auth-container" id="registerForm" style="display:none">
+          <h2>Create Account</h2>
+          <p class="auth-subtitle">Start selling your pre-loved clothing</p>
+          <div class="auth-error" id="registerError"></div>
+          <div class="form-group">
+            <label for="regName">Full Name</label>
+            <input type="text" id="regName" class="form-input" placeholder="Your name">
+          </div>
+          <div class="form-group">
+            <label for="regEmail">Email</label>
+            <input type="email" id="regEmail" class="form-input" placeholder="your@email.com">
+          </div>
+          <div class="form-group">
+            <label for="regPassword">Password</label>
+            <input type="password" id="regPassword" class="form-input" placeholder="Choose a password">
+          </div>
+          <button class="btn-primary" id="registerBtn">Create Account</button>
+          <p class="auth-toggle">
+            Already have an account? <a href="#" id="showLogin">Sign in here</a>
+          </p>
+        </div>
+      </div>
+
+      <!-- Dashboard (shown when logged in) -->
+      <div class="dashboard" id="dashboard">
+        <div class="dashboard-header">
+          <h2>My Listings</h2>
+          <div class="user-info">
+            <span id="userName"></span>
+            <button class="btn-logout" id="logoutBtn">Sign Out</button>
+          </div>
+        </div>
+
+        <!-- Add/Edit Listing Form -->
+        <div class="listing-form-container">
+          <h3 id="formTitle">Add New Listing</h3>
+          <input type="hidden" id="editingId" value="">
+
+          <div class="form-group">
+            <label for="itemTitle">Item Title *</label>
+            <input type="text" id="itemTitle" class="form-input" placeholder="e.g. Navy Shabbos Dress - Lace Detail">
+          </div>
+
+          <div class="form-group">
+            <label for="itemDescription">Description *</label>
+            <textarea id="itemDescription" class="form-input" placeholder="Describe the item: colour, fabric, style, sleeve length, skirt length, any details about modesty features..."></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="itemForWhom">For *</label>
+              <select id="itemForWhom" class="form-input"></select>
+            </div>
+            <div class="form-group" id="ageRangeFormGroup" style="display:none">
+              <label for="itemAgeRange">Age Range</label>
+              <select id="itemAgeRange" class="form-input">
+                <option value="">Select age range</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="itemType">Clothing Type *</label>
+              <select id="itemType" class="form-input"></select>
+            </div>
+            <div class="form-group">
+              <label for="itemSize">Size *</label>
+              <select id="itemSize" class="form-input">
+                <option value="">Select size</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="itemPrice">Price (£) *</label>
+              <input type="number" id="itemPrice" class="form-input" placeholder="0" min="0" step="0.50">
+            </div>
+            <div class="form-group">
+              <label for="itemCondition">Condition *</label>
+              <select id="itemCondition" class="form-input"></select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="itemLocation">Location *</label>
+              <select id="itemLocation" class="form-input"></select>
+            </div>
+            <div class="form-group">
+              <label for="itemContactType">Contact Method *</label>
+              <select id="itemContactType" class="form-input">
+                <option value="whatsapp">WhatsApp</option>
+                <option value="phone">Phone</option>
+                <option value="email">Email</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="itemContactValue">Contact Details *</label>
+            <input type="text" id="itemContactValue" class="form-input" placeholder="WhatsApp number, phone, or email">
+          </div>
+
+          <div class="form-group">
+            <label>Photos (up to 4)</label>
+            <div class="image-upload-area" id="imageUploadArea">
+              <div class="upload-icon">📷</div>
+              <p>Click to add photos</p>
+              <p style="font-size:0.8rem;color:var(--text-muted);margin-top:4px">(Demo mode: images stored locally)</p>
+            </div>
+            <input type="file" id="imageInput" accept="image/*" multiple style="display:none">
+            <div class="image-previews" id="imagePreviews"></div>
+          </div>
+
+          <div style="display:flex;gap:12px">
+            <button class="btn-primary" id="submitListing" style="flex:1">Publish Listing</button>
+            <button class="btn-secondary" id="cancelEdit" style="display:none">Cancel</button>
+          </div>
+        </div>
+
+        <!-- My Listings List -->
+        <div class="my-listings" id="myListings">
+          <h3>Your Listed Items</h3>
+          <div id="myListingsContent">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="logo">
+            <span class="logo-icon">F</span>
+            Frum Fashion Market
+          </div>
+          <p>The UK's marketplace for modest pre-loved fashion. Connecting the Frum community one outfit at a time.</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Frum Fashion Market. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/data.js"></script>
+  <script src="../js/seller.js"></script>
+</body>
+</html>
