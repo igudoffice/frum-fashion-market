@@ -39,7 +39,7 @@ function updateSizeFilterOptions(forWhom) {
   let sizes = [];
   if (!forWhom || forWhom === 'Women') sizes = [...sizes, ...FFM.UK_SIZES];
   if (!forWhom || forWhom === 'Men') sizes = [...sizes, ...FFM.MENS_SIZES];
-  if (!forWhom || ['Girls', 'Boys', 'Children'].includes(forWhom)) sizes = [...sizes, ...FFM.KIDS_SIZES];
+  if (!forWhom || ['Girls', 'Boys', 'Infants'].includes(forWhom)) sizes = [...sizes, ...FFM.KIDS_SIZES];
   if (!forWhom) sizes = [...sizes, ...FFM.SHOE_SIZES];
 
   const unique = ['One Size', ...new Set(sizes)];
@@ -102,7 +102,7 @@ function setupFilterListeners() {
       if (!isActive) {
         chip.classList.add('active');
         currentFilters.forWhom = val;
-        if (['Children', 'Girls', 'Boys'].includes(val)) {
+        if (['Infants', 'Girls', 'Boys'].includes(val)) {
           ageRangeGroup.style.display = 'flex';
         } else {
           ageRangeGroup.style.display = 'none';
@@ -184,7 +184,7 @@ function setFilter(key, value) {
     document.querySelectorAll('#filterForWhomChips .chip').forEach(c => {
       c.classList.toggle('active', c.dataset.value === value);
     });
-    if (['Children', 'Girls', 'Boys'].includes(value)) {
+    if (['Infants', 'Girls', 'Boys'].includes(value)) {
       document.getElementById('ageRangeGroup').style.display = 'flex';
     }
     updateSizeFilterOptions(value);
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (c.dataset.value === val) c.classList.add('active');
     });
     updateSizeFilterOptions(val);
-    if (['Children', 'Girls', 'Boys'].includes(val)) {
+    if (['Infants', 'Girls', 'Boys'].includes(val)) {
       document.getElementById('ageRangeGroup').style.display = 'flex';
     }
   }

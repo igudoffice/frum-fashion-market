@@ -20,7 +20,7 @@ const FFM = {
   MAX_IMAGES: 4,
 
   // Categories
-  FOR_WHOM: ['Women', 'Men', 'Girls', 'Boys', 'Children'],
+  FOR_WHOM: ['Women', 'Men', 'Girls', 'Boys', 'Infants'],
   AGE_RANGES: ['0-2', '2-5', '5-8', '8-12', '12+'],
   CLOTHING_TYPES: [
     'Shabbos & Yom Tov',

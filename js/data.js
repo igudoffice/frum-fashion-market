@@ -195,7 +195,7 @@ const DEMO_LISTINGS = [
     title: 'Baby Boy Outfit Set - 6 Pieces',
     description: 'Adorable baby boy set: 2 bodysuits, 2 sleepsuits, hat, and scratch mittens. All in white and blue. Great condition, from a smoke-free home.',
     price: 14,
-    forWhom: 'Children',
+    forWhom: 'Infants',
     ageRange: '0-2',
     clothingType: 'Everyday Wear',
     size: '3-6m',

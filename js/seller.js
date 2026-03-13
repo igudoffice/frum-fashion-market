@@ -57,7 +57,7 @@ function updateSizeOptions(forWhom) {
     sizes = FFM.UK_SIZES;
   } else if (forWhom === 'Men') {
     sizes = FFM.MENS_SIZES;
-  } else if (['Girls', 'Boys', 'Children'].includes(forWhom)) {
+  } else if (['Girls', 'Boys', 'Infants'].includes(forWhom)) {
     sizes = FFM.KIDS_SIZES;
   }
 
@@ -176,7 +176,7 @@ function setupListingForm() {
 
   forWhomSelect.addEventListener('change', e => {
     const val = e.target.value;
-    if (['Children', 'Girls', 'Boys'].includes(val)) {
+    if (['Infants', 'Girls', 'Boys'].includes(val)) {
       ageRangeGroup.style.display = 'block';
     } else {
       ageRangeGroup.style.display = 'none';
@@ -266,7 +266,7 @@ function submitListing() {
     title,
     description,
     forWhom,
-    ageRange: ['Children', 'Girls', 'Boys'].includes(forWhom) ? ageRange : '',
+    ageRange: ['Infants', 'Girls', 'Boys'].includes(forWhom) ? ageRange : '',
     clothingType,
     size,
     price,
@@ -327,7 +327,7 @@ function editListing(id) {
   const locationInput = document.getElementById('itemLocation');
   if (locationInput) locationInput.dispatchEvent(new Event('input'));
 
-  if (['Children', 'Girls', 'Boys'].includes(listing.forWhom)) {
+  if (['Infants', 'Girls', 'Boys'].includes(listing.forWhom)) {
     document.getElementById('ageRangeFormGroup').style.display = 'block';
     document.getElementById('itemAgeRange').value = listing.ageRange || '';
   }
