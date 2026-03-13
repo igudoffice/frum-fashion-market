@@ -9,7 +9,7 @@ const DEMO_LISTINGS = [
     clothingType: 'Shabbos & Yom Tov',
     size: '12',
     condition: 'Excellent',
-    location: 'London - Golders Green',
+    location: 'NW11',
     sellerName: 'Sarah Cohen',
     sellerId: 'seller1',
     contactType: 'whatsapp',
@@ -26,7 +26,7 @@ const DEMO_LISTINGS = [
     clothingType: 'Skirts',
     size: '10',
     condition: 'Good',
-    location: 'London - Hendon',
+    location: 'NW4',
     sellerName: 'Rivka Levy',
     sellerId: 'seller2',
     contactType: 'whatsapp',
@@ -44,7 +44,7 @@ const DEMO_LISTINGS = [
     clothingType: 'Shabbos & Yom Tov',
     size: '5-6y',
     condition: 'Excellent',
-    location: 'Manchester',
+    location: 'M7',
     sellerName: 'Sarah Cohen',
     sellerId: 'seller1',
     contactType: 'whatsapp',
@@ -61,7 +61,7 @@ const DEMO_LISTINGS = [
     clothingType: 'Suits & Jackets',
     size: 'L',
     condition: 'Good',
-    location: 'London - Stamford Hill',
+    location: 'N16',
     sellerName: 'Rivka Levy',
     sellerId: 'seller2',
     contactType: 'phone',
@@ -78,7 +78,7 @@ const DEMO_LISTINGS = [
     clothingType: 'Tops & Shirts / Blouses',
     size: '14',
     condition: 'Good',
-    location: 'London - Edgware',
+    location: 'HA8',
     sellerName: 'Sarah Cohen',
     sellerId: 'seller1',
     contactType: 'whatsapp',
@@ -95,7 +95,7 @@ const DEMO_LISTINGS = [
     clothingType: 'Coats & Outerwear',
     size: '16',
     condition: 'Excellent',
-    location: 'Gateshead',
+    location: 'NE8',
     sellerName: 'Rivka Levy',
     sellerId: 'seller2',
     contactType: 'email',
@@ -113,7 +113,7 @@ const DEMO_LISTINGS = [
     clothingType: 'Shabbos & Yom Tov',
     size: '9-10y',
     condition: 'Good',
-    location: 'London - Golders Green',
+    location: 'NW11',
     sellerName: 'Sarah Cohen',
     sellerId: 'seller1',
     contactType: 'whatsapp',
@@ -130,7 +130,7 @@ const DEMO_LISTINGS = [
     clothingType: 'Accessories',
     size: 'One Size',
     condition: 'Good',
-    location: 'London - Hendon',
+    location: 'NW4',
     sellerName: 'Rivka Levy',
     sellerId: 'seller2',
     contactType: 'whatsapp',
@@ -147,7 +147,7 @@ const DEMO_LISTINGS = [
     clothingType: 'Maternity',
     size: '12',
     condition: 'Excellent',
-    location: 'Manchester',
+    location: 'M7',
     sellerName: 'Sarah Cohen',
     sellerId: 'seller1',
     contactType: 'whatsapp',
@@ -165,7 +165,7 @@ const DEMO_LISTINGS = [
     clothingType: 'School Uniform',
     size: '6-7y',
     condition: 'Good',
-    location: 'London - Stamford Hill',
+    location: 'N16',
     sellerName: 'Rivka Levy',
     sellerId: 'seller2',
     contactType: 'phone',
@@ -182,7 +182,7 @@ const DEMO_LISTINGS = [
     clothingType: 'Simcha Wear',
     size: '14',
     condition: 'Excellent',
-    location: 'London - Finchley',
+    location: 'N3',
     sellerName: 'Sarah Cohen',
     sellerId: 'seller1',
     contactType: 'whatsapp',
@@ -200,7 +200,7 @@ const DEMO_LISTINGS = [
     clothingType: 'Everyday Wear',
     size: '3-6m',
     condition: 'Good',
-    location: 'Leeds',
+    location: 'LS17',
     sellerName: 'Rivka Levy',
     sellerId: 'seller2',
     contactType: 'whatsapp',
@@ -217,7 +217,7 @@ const DEMO_LISTINGS = [
     clothingType: 'Everyday Wear',
     size: '10',
     condition: 'Excellent',
-    location: 'London - Golders Green',
+    location: 'NW11',
     sellerName: 'Sarah Cohen',
     sellerId: 'seller1',
     contactType: 'whatsapp',
@@ -234,7 +234,7 @@ const DEMO_LISTINGS = [
     clothingType: 'Tops & Shirts / Blouses',
     size: 'M',
     condition: 'Good',
-    location: 'London - Hendon',
+    location: 'NW4',
     sellerName: 'Rivka Levy',
     sellerId: 'seller2',
     contactType: 'whatsapp',
@@ -252,7 +252,7 @@ const DEMO_LISTINGS = [
     clothingType: 'Simcha Wear',
     size: '10-11y',
     condition: 'Excellent',
-    location: 'Birmingham',
+    location: 'B17',
     sellerName: 'Sarah Cohen',
     sellerId: 'seller1',
     contactType: 'whatsapp',
@@ -262,27 +262,28 @@ const DEMO_LISTINGS = [
   }
 ];
 
-// Initialize listings in storage if not already present
 function initializeListings() {
+  // Force refresh if old format detected
   const existing = Storage.getListings();
+  if (existing && existing[0] && existing[0].location && existing[0].location.includes(' - ')) {
+    Storage.saveListings(DEMO_LISTINGS);
+    return;
+  }
   if (!existing) {
     Storage.saveListings(DEMO_LISTINGS);
   }
 }
 
-// Get all listings
 function getAllListings() {
   initializeListings();
   return Storage.getListings();
 }
 
-// Get a single listing by ID
 function getListingById(id) {
   const listings = getAllListings();
   return listings.find(l => l.id === id);
 }
 
-// Add a new listing
 function addListing(listing) {
   const listings = getAllListings();
   listing.id = 'listing_' + Date.now();
@@ -292,7 +293,6 @@ function addListing(listing) {
   return listing;
 }
 
-// Update a listing
 function updateListing(id, updates) {
   const listings = getAllListings();
   const index = listings.findIndex(l => l.id === id);
@@ -304,14 +304,12 @@ function updateListing(id, updates) {
   return null;
 }
 
-// Delete a listing
 function deleteListing(id) {
   let listings = getAllListings();
   listings = listings.filter(l => l.id !== id);
   Storage.saveListings(listings);
 }
 
-// Filter listings
 function filterListings({ search, forWhom, clothingType, size, ageRange, condition, minPrice, maxPrice } = {}) {
   let listings = getAllListings();
 
@@ -320,7 +318,8 @@ function filterListings({ search, forWhom, clothingType, size, ageRange, conditi
     listings = listings.filter(l =>
       l.title.toLowerCase().includes(q) ||
       l.description.toLowerCase().includes(q) ||
-      l.location.toLowerCase().includes(q)
+      l.location.toLowerCase().includes(q) ||
+      formatLocation(l.location).toLowerCase().includes(q)
     );
   }
 
@@ -355,12 +354,10 @@ function filterListings({ search, forWhom, clothingType, size, ageRange, conditi
   return listings;
 }
 
-// Get listings for a specific seller
 function getSellerListings(sellerId) {
   return getAllListings().filter(l => l.sellerId === sellerId);
 }
 
-// Format date for display
 function formatDate(dateStr) {
   const date = new Date(dateStr);
   const now = new Date();
@@ -374,17 +371,21 @@ function formatDate(dateStr) {
   return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 }
 
-// Generate placeholder color based on item properties
 function getPlaceholderColor(listing) {
-  const colors = [
-    '#e8d5d5', '#d5dbe8', '#d5e8d9', '#e8e5d5',
-    '#ddd5e8', '#d5e3e8', '#e8d5de', '#d9e8d5'
+  const palettes = [
+    ['#f5e4df', '#f8efe7', '#e4c2bc'],
+    ['#dde7f4', '#eef3fb', '#aabfdf'],
+    ['#e2efe7', '#f0f8f3', '#99bfa7'],
+    ['#ece3f5', '#f6f0fb', '#bcadd6'],
+    ['#f3ead8', '#fbf7ee', '#d6c093'],
+    ['#dfeff0', '#eef8f9', '#9dbfc2']
   ];
-  const hash = listing.id.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
-  return colors[hash % colors.length];
+  const hash = String(listing.id || listing.title || '')
+    .split('')
+    .reduce((acc, c) => acc + c.charCodeAt(0), 0);
+  return palettes[hash % palettes.length];
 }
 
-// Clothing type icons (emoji)
 const TYPE_ICONS = {
   'Shabbos & Yom Tov': '✨',
   'Everyday Wear': '👕',
@@ -399,3 +400,87 @@ const TYPE_ICONS = {
   'School Uniform': '🎒',
   'Simcha Wear': '🎉'
 };
+
+function getLocationLabel(location = '') {
+  return location.split(' - ')[0] || location;
+}
+
+function getPlaceholderStyle(listing) {
+  const [base, glow, accent] = getPlaceholderColor(listing);
+  return `--placeholder-base:${base};--placeholder-glow:${glow};--placeholder-accent:${accent};`;
+}
+
+function createListingVisualMarkup(listing, variant = 'card') {
+  const image = listing.images && listing.images.length > 0 ? listing.images[0] : '';
+
+  if (image) {
+    return `<img src="${image}" alt="${listing.title}">`;
+  }
+
+  const icon = TYPE_ICONS[listing.clothingType] || '👕';
+  const agePill = listing.ageRange ? `<span class="graphic-chip">${listing.ageRange} yrs</span>` : '';
+
+  return `
+    <div class="listing-graphic listing-graphic-${variant}" aria-hidden="true">
+      <div class="listing-graphic-orbit listing-graphic-orbit-one"></div>
+      <div class="listing-graphic-orbit listing-graphic-orbit-two"></div>
+      <div class="listing-graphic-badge">${listing.forWhom}</div>
+      ${agePill}
+      <div class="listing-graphic-icon">${icon}</div>
+      <div class="listing-graphic-label">${listing.clothingType}</div>
+    </div>
+  `;
+}
+
+function createListingCard(listing, { showPosted = true } = {}) {
+  const card = document.createElement('a');
+  card.className = 'listing-card';
+  card.href = `/listing/?id=${listing.id}`;
+
+  const conditionBadge = listing.condition === 'New with Tags'
+    ? '<span class="card-badge">New with Tags</span>'
+    : '';
+
+  const meta = [
+    `<span>📐 ${listing.size}</span>`,
+    `<span>📍 ${formatLocation(listing.location)}</span>`
+  ];
+
+  if (showPosted) {
+    meta.push(`<span>🕐 ${formatDate(listing.createdAt)}</span>`);
+  }
+
+  card.innerHTML = `
+    <div class="card-image" style="${getPlaceholderStyle(listing)}">
+      ${createListingVisualMarkup(listing, 'card')}
+      ${conditionBadge}
+    </div>
+    <div class="card-body">
+      <h3>${listing.title}</h3>
+      <div class="card-price">${FFM.CURRENCY}${listing.price}</div>
+      <div class="card-meta">
+        ${meta.join('')}
+      </div>
+    </div>
+  `;
+
+  return card;
+}
+
+function createSellerListingItemMarkup(item) {
+  return `
+    <div class="my-listing-item">
+      <div class="my-listing-thumb" style="${getPlaceholderStyle(item)}">
+        ${createListingVisualMarkup(item, 'thumb')}
+      </div>
+      <div class="my-listing-info">
+        <h4>${item.title}</h4>
+        <p>${FFM.CURRENCY}${item.price} &middot; Size ${item.size} &middot; ${item.condition} &middot; ${formatDate(item.createdAt)}</p>
+      </div>
+      <div class="my-listing-actions">
+        <button class="btn-icon" onclick="editListing('${item.id}')" title="Edit">✏️</button>
+        <button class="btn-icon delete" onclick="confirmDelete('${item.id}')" title="Delete">🗑️</button>
+      </div>
+    </div>
+  `;
+}

@@ -48,12 +48,18 @@
   <!-- Filters -->
   <section class="filters-bar">
     <div class="container filters-inner">
-      <div class="filter-group">
+      <!-- Row 1: For Whom chips -->
+      <div class="filter-group for-whom-group">
         <label>For:</label>
-        <select class="filter-select" id="filterForWhom">
-          <option value="">Everyone</option>
-        </select>
+        <div class="filter-chips" id="filterForWhomChips">
+          <button class="chip" data-value="Women">Women</button>
+          <button class="chip" data-value="Men">Men</button>
+          <button class="chip" data-value="Girls">Girls</button>
+          <button class="chip" data-value="Boys">Boys</button>
+          <button class="chip" data-value="Children">Children</button>
+        </div>
       </div>
+      <!-- Row 2: Dropdowns -->
       <div class="filter-group">
         <label>Type:</label>
         <select class="filter-select" id="filterType">
@@ -64,6 +70,12 @@
         <label>Age:</label>
         <select class="filter-select" id="filterAgeRange">
           <option value="">All Ages</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Size:</label>
+        <select class="filter-select" id="filterSize">
+          <option value="">Any</option>
         </select>
       </div>
       <div class="filter-group">

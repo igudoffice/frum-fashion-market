@@ -5,20 +5,15 @@ let currentFilters = {
   forWhom: '',
   clothingType: '',
   ageRange: '',
+  size: '',
   condition: '',
   maxPrice: ''
 };
 
-// Populate filter dropdowns
 function populateFilters() {
-  const forWhomSelect = document.getElementById('filterForWhom');
   const typeSelect = document.getElementById('filterType');
   const conditionSelect = document.getElementById('filterCondition');
   const ageRangeSelect = document.getElementById('filterAgeRange');
-
-  FFM.FOR_WHOM.forEach(item => {
-    forWhomSelect.appendChild(new Option(item, item));
-  });
 
   FFM.CLOTHING_TYPES.forEach(item => {
     typeSelect.appendChild(new Option(item, item));
@@ -31,42 +26,28 @@ function populateFilters() {
   FFM.AGE_RANGES.forEach(item => {
     ageRangeSelect.appendChild(new Option(item + ' years', item));
   });
+
+  updateSizeFilterOptions('');
 }
 
-// Render a single listing card
-function createListingCard(listing) {
-  const card = document.createElement('a');
-  card.className = 'listing-card';
-  card.href = `/listing/?id=${listing.id}`;
+function updateSizeFilterOptions(forWhom) {
+  const sizeSelect = document.getElementById('filterSize');
+  if (!sizeSelect) return;
+  const current = sizeSelect.value;
+  sizeSelect.innerHTML = '<option value="">Any</option>';
 
-  const bgColor = getPlaceholderColor(listing);
-  const icon = TYPE_ICONS[listing.clothingType] || '👕';
-  const conditionBadge = listing.condition === 'New with Tags' ? '<span class="card-badge">New with Tags</span>' : '';
+  let sizes = [];
+  if (!forWhom || forWhom === 'Women') sizes = [...sizes, ...FFM.UK_SIZES];
+  if (!forWhom || forWhom === 'Men') sizes = [...sizes, ...FFM.MENS_SIZES];
+  if (!forWhom || ['Girls', 'Boys', 'Children'].includes(forWhom)) sizes = [...sizes, ...FFM.KIDS_SIZES];
+  if (!forWhom) sizes = [...sizes, ...FFM.SHOE_SIZES];
 
-  const imageHtml = listing.images && listing.images.length > 0
-    ? `<img src="${listing.images[0]}" alt="${listing.title}">`
-    : `<div class="placeholder-icon">${icon}</div>`;
+  const unique = ['One Size', ...new Set(sizes)];
+  unique.forEach(s => sizeSelect.appendChild(new Option(s, s)));
 
-  card.innerHTML = `
-    <div class="card-image" style="background:${bgColor}">
-      ${imageHtml}
-      ${conditionBadge}
-    </div>
-    <div class="card-body">
-      <h3>${listing.title}</h3>
-      <div class="card-price">${FFM.CURRENCY}${listing.price}</div>
-      <div class="card-meta">
-        <span>📐 ${listing.size}</span>
-        <span>📍 ${listing.location.split(' - ')[0]}</span>
-        <span>🕐 ${formatDate(listing.createdAt)}</span>
-      </div>
-    </div>
-  `;
-
-  return card;
+  if (current && unique.includes(current)) sizeSelect.value = current;
 }
 
-// Render all listings
 function renderListings() {
   const grid = document.getElementById('listingsGrid');
   const emptyState = document.getElementById('emptyState');
@@ -77,8 +58,9 @@ function renderListings() {
   if (currentFilters.forWhom) filters.forWhom = currentFilters.forWhom;
   if (currentFilters.clothingType) filters.clothingType = currentFilters.clothingType;
   if (currentFilters.ageRange) filters.ageRange = currentFilters.ageRange;
+  if (currentFilters.size) filters.size = currentFilters.size;
   if (currentFilters.condition) filters.condition = currentFilters.condition;
-  if (currentFilters.maxPrice) filters.maxPrice = parseInt(currentFilters.maxPrice);
+  if (currentFilters.maxPrice) filters.maxPrice = parseInt(currentFilters.maxPrice, 10);
 
   const listings = filterListings(filters);
 
@@ -87,84 +69,108 @@ function renderListings() {
   if (listings.length === 0) {
     emptyState.style.display = 'block';
     resultsCount.textContent = '0 items';
-  } else {
-    emptyState.style.display = 'none';
-    resultsCount.textContent = `${listings.length} item${listings.length !== 1 ? 's' : ''}`;
-    listings.forEach(listing => {
-      grid.appendChild(createListingCard(listing));
-    });
+    return;
   }
+
+  emptyState.style.display = 'none';
+  resultsCount.textContent = `${listings.length} item${listings.length !== 1 ? 's' : ''}`;
+  listings.forEach(listing => {
+    grid.appendChild(createListingCard(listing));
+  });
 }
 
-// Handle filter changes
 function setupFilterListeners() {
-  const forWhomSelect = document.getElementById('filterForWhom');
   const typeSelect = document.getElementById('filterType');
   const conditionSelect = document.getElementById('filterCondition');
   const maxPriceSelect = document.getElementById('filterMaxPrice');
+  const sizeSelect = document.getElementById('filterSize');
   const ageRangeSelect = document.getElementById('filterAgeRange');
   const ageRangeGroup = document.getElementById('ageRangeGroup');
   const clearBtn = document.getElementById('clearFilters');
   const heroSearch = document.getElementById('heroSearch');
   const heroSearchBtn = document.getElementById('heroSearchBtn');
 
-  forWhomSelect.addEventListener('change', (e) => {
-    currentFilters.forWhom = e.target.value;
-    // Show age range filter for Children, Girls, Boys
-    if (['Children', 'Girls', 'Boys'].includes(e.target.value)) {
-      ageRangeGroup.style.display = 'flex';
-    } else {
-      ageRangeGroup.style.display = 'none';
-      currentFilters.ageRange = '';
-      ageRangeSelect.value = '';
-    }
-    renderListings();
+  // For Whom chip buttons (toggle on click, click again to deselect)
+  document.querySelectorAll('#filterForWhomChips .chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const val = chip.dataset.value;
+      const isActive = chip.classList.contains('active');
+
+      // Deactivate all chips first
+      document.querySelectorAll('#filterForWhomChips .chip').forEach(c => c.classList.remove('active'));
+
+      if (!isActive) {
+        chip.classList.add('active');
+        currentFilters.forWhom = val;
+        if (['Children', 'Girls', 'Boys'].includes(val)) {
+          ageRangeGroup.style.display = 'flex';
+        } else {
+          ageRangeGroup.style.display = 'none';
+          currentFilters.ageRange = '';
+          ageRangeSelect.value = '';
+        }
+      } else {
+        // Clicking active chip deselects it
+        currentFilters.forWhom = '';
+        ageRangeGroup.style.display = 'none';
+        currentFilters.ageRange = '';
+        ageRangeSelect.value = '';
+      }
+
+      updateSizeFilterOptions(currentFilters.forWhom);
+      renderListings();
+    });
   });
 
-  typeSelect.addEventListener('change', (e) => {
+  typeSelect.addEventListener('change', e => {
     currentFilters.clothingType = e.target.value;
     renderListings();
   });
 
-  conditionSelect.addEventListener('change', (e) => {
+  conditionSelect.addEventListener('change', e => {
     currentFilters.condition = e.target.value;
     renderListings();
   });
 
-  maxPriceSelect.addEventListener('change', (e) => {
+  maxPriceSelect.addEventListener('change', e => {
     currentFilters.maxPrice = e.target.value;
     renderListings();
   });
 
-  ageRangeSelect.addEventListener('change', (e) => {
+  sizeSelect.addEventListener('change', e => {
+    currentFilters.size = e.target.value;
+    renderListings();
+  });
+
+  ageRangeSelect.addEventListener('change', e => {
     currentFilters.ageRange = e.target.value;
     renderListings();
   });
 
   clearBtn.addEventListener('click', () => {
-    currentFilters = { search: '', forWhom: '', clothingType: '', ageRange: '', condition: '', maxPrice: '' };
-    forWhomSelect.value = '';
+    currentFilters = { search: '', forWhom: '', clothingType: '', ageRange: '', size: '', condition: '', maxPrice: '' };
+    document.querySelectorAll('#filterForWhomChips .chip').forEach(c => c.classList.remove('active'));
     typeSelect.value = '';
     conditionSelect.value = '';
     maxPriceSelect.value = '';
     ageRangeSelect.value = '';
+    sizeSelect.value = '';
     ageRangeGroup.style.display = 'none';
     heroSearch.value = '';
+    updateSizeFilterOptions('');
     renderListings();
   });
 
-  // Search
   const doSearch = () => {
     currentFilters.search = heroSearch.value.trim();
     renderListings();
   };
 
   heroSearchBtn.addEventListener('click', doSearch);
-  heroSearch.addEventListener('keydown', (e) => {
+  heroSearch.addEventListener('keydown', e => {
     if (e.key === 'Enter') doSearch();
   });
 
-  // Live search with debounce
   let searchTimeout;
   heroSearch.addEventListener('input', () => {
     clearTimeout(searchTimeout);
@@ -172,28 +178,39 @@ function setupFilterListeners() {
   });
 }
 
-// Allow setting filters from footer links
 function setFilter(key, value) {
   currentFilters[key] = value;
-  const select = document.getElementById(key === 'forWhom' ? 'filterForWhom' : 'filterType');
-  if (select) select.value = value;
-  if (key === 'forWhom' && ['Children', 'Girls', 'Boys'].includes(value)) {
-    document.getElementById('ageRangeGroup').style.display = 'flex';
+  if (key === 'forWhom') {
+    document.querySelectorAll('#filterForWhomChips .chip').forEach(c => {
+      c.classList.toggle('active', c.dataset.value === value);
+    });
+    if (['Children', 'Girls', 'Boys'].includes(value)) {
+      document.getElementById('ageRangeGroup').style.display = 'flex';
+    }
+    updateSizeFilterOptions(value);
+  } else {
+    const select = document.getElementById(key === 'clothingType' ? 'filterType' : key);
+    if (select) select.value = value;
   }
   renderListings();
   window.scrollTo({ top: document.querySelector('.listings-section').offsetTop - 80, behavior: 'smooth' });
 }
 
-// Initialize
 document.addEventListener('DOMContentLoaded', () => {
   populateFilters();
   setupFilterListeners();
 
-  // Check URL params for pre-set filters
   const params = new URLSearchParams(window.location.search);
   if (params.get('forWhom')) {
-    currentFilters.forWhom = params.get('forWhom');
-    document.getElementById('filterForWhom').value = params.get('forWhom');
+    const val = params.get('forWhom');
+    currentFilters.forWhom = val;
+    document.querySelectorAll('#filterForWhomChips .chip').forEach(c => {
+      if (c.dataset.value === val) c.classList.add('active');
+    });
+    updateSizeFilterOptions(val);
+    if (['Children', 'Girls', 'Boys'].includes(val)) {
+      document.getElementById('ageRangeGroup').style.display = 'flex';
+    }
   }
   if (params.get('type')) {
     currentFilters.clothingType = params.get('type');

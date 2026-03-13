@@ -1,14 +1,11 @@
 // ===== Seller Dashboard Logic =====
 
 let uploadedImages = [];
-let editingListing = null;
 
-// Populate form dropdowns
 function populateFormDropdowns() {
   const forWhomSelect = document.getElementById('itemForWhom');
   const typeSelect = document.getElementById('itemType');
   const conditionSelect = document.getElementById('itemCondition');
-  const locationSelect = document.getElementById('itemLocation');
   const ageRangeSelect = document.getElementById('itemAgeRange');
 
   forWhomSelect.innerHTML = '<option value="">Select...</option>';
@@ -26,17 +23,31 @@ function populateFormDropdowns() {
     conditionSelect.appendChild(new Option(item, item));
   });
 
-  locationSelect.innerHTML = '<option value="">Select...</option>';
-  FFM.LOCATIONS.forEach(item => {
-    locationSelect.appendChild(new Option(item, item));
-  });
-
   FFM.AGE_RANGES.forEach(item => {
     ageRangeSelect.appendChild(new Option(item + ' years', item));
   });
+
+  // Location is now a text input for postcode — no dropdown to populate
+  // Add live preview of neighbourhood as they type
+  const locationInput = document.getElementById('itemLocation');
+  const locationPreview = document.getElementById('locationPreview');
+  if (locationInput && locationPreview) {
+    locationInput.addEventListener('input', () => {
+      const val = locationInput.value.trim().toUpperCase();
+      const neighbourhood = getNeighbourhood(val);
+      if (neighbourhood) {
+        locationPreview.textContent = `📍 ${val} · ${neighbourhood}`;
+        locationPreview.style.display = 'block';
+      } else if (val.length >= 2) {
+        locationPreview.textContent = `📍 ${val}`;
+        locationPreview.style.display = 'block';
+      } else {
+        locationPreview.style.display = 'none';
+      }
+    });
+  }
 }
 
-// Update size options based on forWhom selection
 function updateSizeOptions(forWhom) {
   const sizeSelect = document.getElementById('itemSize');
   sizeSelect.innerHTML = '<option value="">Select size</option>';
@@ -50,7 +61,6 @@ function updateSizeOptions(forWhom) {
     sizes = FFM.KIDS_SIZES;
   }
 
-  // Add One Size option for accessories
   sizes = ['One Size', ...sizes];
 
   sizes.forEach(s => {
@@ -58,7 +68,6 @@ function updateSizeOptions(forWhom) {
   });
 }
 
-// Check if user is logged in
 function checkAuth() {
   const user = Storage.getUser();
   const authSection = document.getElementById('authSection');
@@ -75,7 +84,6 @@ function checkAuth() {
   }
 }
 
-// Setup auth event listeners
 function setupAuth() {
   const loginBtn = document.getElementById('loginBtn');
   const registerBtn = document.getElementById('registerBtn');
@@ -83,20 +91,18 @@ function setupAuth() {
   const showLogin = document.getElementById('showLogin');
   const logoutBtn = document.getElementById('logoutBtn');
 
-  // Toggle between login and register
-  showRegister.addEventListener('click', (e) => {
+  showRegister.addEventListener('click', e => {
     e.preventDefault();
     document.getElementById('loginForm').style.display = 'none';
     document.getElementById('registerForm').style.display = 'block';
   });
 
-  showLogin.addEventListener('click', (e) => {
+  showLogin.addEventListener('click', e => {
     e.preventDefault();
     document.getElementById('registerForm').style.display = 'none';
     document.getElementById('loginForm').style.display = 'block';
   });
 
-  // Login
   loginBtn.addEventListener('click', () => {
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
@@ -118,7 +124,6 @@ function setupAuth() {
     }
   });
 
-  // Register
   registerBtn.addEventListener('click', () => {
     const name = document.getElementById('regName').value.trim();
     const email = document.getElementById('regEmail').value.trim();
@@ -147,15 +152,13 @@ function setupAuth() {
     }
   });
 
-  // Allow Enter key to submit
-  document.getElementById('loginPassword').addEventListener('keydown', (e) => {
+  document.getElementById('loginPassword').addEventListener('keydown', e => {
     if (e.key === 'Enter') loginBtn.click();
   });
-  document.getElementById('regPassword').addEventListener('keydown', (e) => {
+  document.getElementById('regPassword').addEventListener('keydown', e => {
     if (e.key === 'Enter') registerBtn.click();
   });
 
-  // Logout
   logoutBtn.addEventListener('click', () => {
     Storage.clearUser();
     checkAuth();
@@ -163,7 +166,6 @@ function setupAuth() {
   });
 }
 
-// Setup listing form
 function setupListingForm() {
   const forWhomSelect = document.getElementById('itemForWhom');
   const ageRangeGroup = document.getElementById('ageRangeFormGroup');
@@ -172,8 +174,7 @@ function setupListingForm() {
   const imageArea = document.getElementById('imageUploadArea');
   const imageInput = document.getElementById('imageInput');
 
-  // Show/hide age range and update sizes when forWhom changes
-  forWhomSelect.addEventListener('change', (e) => {
+  forWhomSelect.addEventListener('change', e => {
     const val = e.target.value;
     if (['Children', 'Girls', 'Boys'].includes(val)) {
       ageRangeGroup.style.display = 'block';
@@ -184,20 +185,12 @@ function setupListingForm() {
     updateSizeOptions(val);
   });
 
-  // Image upload
   imageArea.addEventListener('click', () => imageInput.click());
   imageInput.addEventListener('change', handleImageUpload);
-
-  // Submit listing
   submitBtn.addEventListener('click', submitListing);
-
-  // Cancel edit
-  cancelBtn.addEventListener('click', () => {
-    resetForm();
-  });
+  cancelBtn.addEventListener('click', resetForm);
 }
 
-// Handle image upload
 function handleImageUpload(e) {
   const files = Array.from(e.target.files);
   const remaining = FFM.MAX_IMAGES - uploadedImages.length;
@@ -211,7 +204,7 @@ function handleImageUpload(e) {
 
   toProcess.forEach(file => {
     const reader = new FileReader();
-    reader.onload = (ev) => {
+    reader.onload = ev => {
       uploadedImages.push(ev.target.result);
       renderImagePreviews();
     };
@@ -221,7 +214,6 @@ function handleImageUpload(e) {
   e.target.value = '';
 }
 
-// Render image previews
 function renderImagePreviews() {
   const container = document.getElementById('imagePreviews');
   container.innerHTML = '';
@@ -236,17 +228,15 @@ function renderImagePreviews() {
     container.appendChild(preview);
   });
 
-  // Attach remove handlers
   container.querySelectorAll('.remove-image').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const idx = parseInt(e.target.dataset.index);
+    btn.addEventListener('click', e => {
+      const idx = parseInt(e.target.dataset.index, 10);
       uploadedImages.splice(idx, 1);
       renderImagePreviews();
     });
   });
 }
 
-// Submit / update listing
 function submitListing() {
   const user = Storage.getUser();
   if (!user) return;
@@ -259,14 +249,16 @@ function submitListing() {
   const size = document.getElementById('itemSize').value;
   const price = parseFloat(document.getElementById('itemPrice').value);
   const condition = document.getElementById('itemCondition').value;
-  const location = document.getElementById('itemLocation').value;
-  const contactType = document.getElementById('itemContactType').value;
-  const contactValue = document.getElementById('itemContactValue').value.trim();
+  const locationRaw = document.getElementById('itemLocation').value.trim().toUpperCase().split(' ')[0];
   const editingId = document.getElementById('editingId').value;
 
-  // Validation
-  if (!title || !description || !forWhom || !clothingType || !size || !price || !condition || !location || !contactValue) {
+  if (!title || !description || !forWhom || !clothingType || !size || !price || !condition || !locationRaw) {
     showToast('Please fill in all required fields', true);
+    return;
+  }
+
+  if (!isValidOutwardCode(locationRaw)) {
+    showToast('Please enter a valid postcode area (e.g. NW11, N16, M8)', true);
     return;
   }
 
@@ -279,11 +271,10 @@ function submitListing() {
     size,
     price,
     condition,
-    location,
+    location: locationRaw,
+    neighbourhood: getNeighbourhood(locationRaw),
     sellerName: user.name,
     sellerId: user.id,
-    contactType,
-    contactValue,
     images: uploadedImages
   };
 
@@ -299,7 +290,6 @@ function submitListing() {
   renderMyListings();
 }
 
-// Reset form
 function resetForm() {
   document.getElementById('editingId').value = '';
   document.getElementById('formTitle').textContent = 'Add New Listing';
@@ -312,8 +302,8 @@ function resetForm() {
   document.getElementById('itemPrice').value = '';
   document.getElementById('itemCondition').value = '';
   document.getElementById('itemLocation').value = '';
-  document.getElementById('itemContactType').value = 'whatsapp';
-  document.getElementById('itemContactValue').value = '';
+  const locationPreview = document.getElementById('locationPreview');
+  if (locationPreview) locationPreview.style.display = 'none';
   document.getElementById('ageRangeFormGroup').style.display = 'none';
   document.getElementById('cancelEdit').style.display = 'none';
   document.getElementById('submitListing').textContent = 'Publish Listing';
@@ -321,12 +311,10 @@ function resetForm() {
   renderImagePreviews();
 }
 
-// Edit a listing
 function editListing(id) {
   const listing = getListingById(id);
   if (!listing) return;
 
-  editingListing = listing;
   document.getElementById('editingId').value = id;
   document.getElementById('formTitle').textContent = 'Edit Listing';
   document.getElementById('itemTitle').value = listing.title;
@@ -336,10 +324,9 @@ function editListing(id) {
   document.getElementById('itemPrice').value = listing.price;
   document.getElementById('itemCondition').value = listing.condition;
   document.getElementById('itemLocation').value = listing.location;
-  document.getElementById('itemContactType').value = listing.contactType || 'whatsapp';
-  document.getElementById('itemContactValue').value = listing.contactValue || '';
+  const locationInput = document.getElementById('itemLocation');
+  if (locationInput) locationInput.dispatchEvent(new Event('input'));
 
-  // Handle forWhom-dependent fields
   if (['Children', 'Girls', 'Boys'].includes(listing.forWhom)) {
     document.getElementById('ageRangeFormGroup').style.display = 'block';
     document.getElementById('itemAgeRange').value = listing.ageRange || '';
@@ -354,11 +341,9 @@ function editListing(id) {
   document.getElementById('cancelEdit').style.display = 'block';
   document.getElementById('submitListing').textContent = 'Update Listing';
 
-  // Scroll to form
   document.querySelector('.listing-form-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Render my listings
 function renderMyListings() {
   const user = Storage.getUser();
   if (!user) return;
@@ -375,31 +360,9 @@ function renderMyListings() {
     return;
   }
 
-  container.innerHTML = myItems.map(item => {
-    const bgColor = getPlaceholderColor(item);
-    const icon = TYPE_ICONS[item.clothingType] || '👕';
-
-    return `
-      <div class="my-listing-item">
-        <div class="my-listing-thumb" style="background:${bgColor};display:flex;align-items:center;justify-content:center">
-          ${item.images && item.images.length > 0
-            ? `<img src="${item.images[0]}" alt="${item.title}">`
-            : `<span style="font-size:24px">${icon}</span>`}
-        </div>
-        <div class="my-listing-info">
-          <h4>${item.title}</h4>
-          <p>${FFM.CURRENCY}${item.price} &middot; Size ${item.size} &middot; ${item.condition} &middot; ${formatDate(item.createdAt)}</p>
-        </div>
-        <div class="my-listing-actions">
-          <button class="btn-icon" onclick="editListing('${item.id}')" title="Edit">✏️</button>
-          <button class="btn-icon delete" onclick="confirmDelete('${item.id}')" title="Delete">🗑️</button>
-        </div>
-      </div>
-    `;
-  }).join('');
+  container.innerHTML = myItems.map(createSellerListingItemMarkup).join('');
 }
 
-// Confirm delete
 function confirmDelete(id) {
   if (confirm('Are you sure you want to delete this listing?')) {
     deleteListing(id);
@@ -408,7 +371,6 @@ function confirmDelete(id) {
   }
 }
 
-// Initialize
 document.addEventListener('DOMContentLoaded', () => {
   populateFormDropdowns();
   setupAuth();

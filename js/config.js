@@ -24,17 +24,22 @@ const FFM = {
   AGE_RANGES: ['0-2', '2-5', '5-8', '8-12', '12+'],
   CLOTHING_TYPES: [
     'Shabbos & Yom Tov',
-    'Everyday Wear',
+    'Simcha Wear',
+    'Dresses',
     'Skirts',
     'Tops & Shirts / Blouses',
-    'Dresses',
+    'Jumpers & Knitwear',
     'Suits & Jackets',
     'Coats & Outerwear',
-    'Accessories',
-    'Maternity',
+    'Trousers & Pants',
+    'Everyday Wear',
     'Shoes',
+    'Accessories',
+    'Tichels & Snoods',
+    'Kappel / Yarmulke',
+    'Maternity',
     'School Uniform',
-    'Simcha Wear'
+    'Pyjamas & Nightwear'
   ],
   CONDITIONS: ['New with Tags', 'Excellent', 'Good', 'Fair'],
   UK_SIZES: ['4', '6', '8', '10', '12', '14', '16', '18', '20', '22', '24', '26'],
@@ -42,23 +47,81 @@ const FFM = {
   MENS_SIZES: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
   SHOE_SIZES: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'],
 
-  // UK locations
-  LOCATIONS: [
-    'London - Golders Green',
-    'London - Hendon',
-    'London - Stamford Hill',
-    'London - Edgware',
-    'London - Finchley',
-    'London - Other',
-    'Manchester',
-    'Gateshead',
-    'Leeds',
-    'Birmingham',
-    'Bournemouth',
-    'Brighton',
-    'Other'
-  ]
+  // Postcode → Neighbourhood lookup
+  // Seller types postcode, we auto-map to neighbourhood name
+  // Display format: "📍 NW11 · Golders Green"
+  POSTCODE_MAP: {
+    // London
+    'NW11': 'Golders Green',
+    'NW4': 'Hendon',
+    'N16': 'Stamford Hill',
+    'N15': 'Stamford Hill',
+    'E5': 'Clapton',
+    'HA8': 'Edgware',
+    'HA7': 'Stanmore',
+    'NW7': 'Mill Hill',
+    'N3': 'Finchley',
+    'N2': 'East Finchley',
+    'NW2': 'Cricklewood',
+    'NW6': 'Kilburn',
+    'NW9': 'Kingsbury',
+    'HA0': 'Wembley',
+    'N12': 'North Finchley',
+    'EN5': 'Barnet',
+    'WD6': 'Borehamwood',
+    'IG6': 'Ilford',
+    'IG1': 'Ilford',
+    'E1': 'Whitechapel',
+    // Manchester
+    'M7': 'Broughton Park',
+    'M8': 'Crumpsall',
+    'M25': 'Prestwich',
+    'M45': 'Whitefield',
+    // Gateshead
+    'NE8': 'Gateshead',
+    'NE9': 'Gateshead',
+    // Leeds
+    'LS17': 'Leeds',
+    'LS8': 'Leeds',
+    // Birmingham
+    'B17': 'Birmingham',
+    // Bournemouth
+    'BH1': 'Bournemouth',
+    'BH2': 'Bournemouth',
+    'BH8': 'Bournemouth',
+    // Brighton
+    'BN1': 'Brighton',
+    'BN3': 'Hove',
+    // Southend
+    'SS0': 'Southend',
+    'SS1': 'Southend',
+    // Essex
+    'IG7': 'Chigwell',
+    'IG10': 'Loughton',
+  }
 };
+
+// Look up neighbourhood from postcode
+function getNeighbourhood(postcode) {
+  if (!postcode) return '';
+  const clean = postcode.trim().toUpperCase().split(' ')[0];
+  return FFM.POSTCODE_MAP[clean] || '';
+}
+
+// Format location for display: "NW11 · Golders Green" or just "SW1" if not in map
+function formatLocation(postcode) {
+  if (!postcode) return '';
+  const clean = postcode.trim().toUpperCase().split(' ')[0];
+  const neighbourhood = getNeighbourhood(clean);
+  return neighbourhood ? `${clean} · ${neighbourhood}` : clean;
+}
+
+// Validate outward postcode format (basic UK pattern)
+function isValidOutwardCode(code) {
+  if (!code) return false;
+  const clean = code.trim().toUpperCase();
+  return /^[A-Z]{1,2}\d{1,2}[A-Z]?$/.test(clean);
+}
 
 // ===== Storage helpers (localStorage for demo, Firebase for production) =====
 const Storage = {
